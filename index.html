@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>La Oaxaqueñaca - Auténtica comida mexicana</title>
+  <meta name="description" content="Menú digital de La Oaxaqueñaca con tacos, quesadillas, burritos y más platillos mexicanos auténticos">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #f0f2f5;
+      padding: 16px;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 400px;
+      margin: auto;
+      background-color: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .header {
+      text-align: center;
+      padding: 20px 16px;
+      background: linear-gradient(135deg, #d33a2d 0%, #ff6b35 100%);
+      color: white;
+    }
+
+    .header h1 {
+      color: white;
+      font-size: 28px;
+      margin-bottom: 4px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .header p {
+      color: rgba(255,255,255,0.9);
+      font-size: 14px;
+      font-weight: 300;
+    }
+
+    .sticky-container {
+      position: -webkit-sticky;
+      position: sticky;
+      top: 0;
+      background-color: white;
+      padding: 16px 0;
+      z-index: 10;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .search {
+      padding: 0 16px 16px;
+      position: relative;
+    }
+
+    .search input {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 25px;
+      border: 2px solid #e0e0e0;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      background-color: #f8f9fa;
+    }
+
+    .search input:focus {
+      outline: none;
+      border-color: #d33a2d;
+      background-color: white;
+      box-shadow: 0 0 0 3px rgba(211, 58, 45, 0.1);
+    }
+
+    .search input::placeholder {
+      color: #999;
+    }
+
+    .cart-button {
+      background: linear-gradient(135deg, #d33a2d 0%, #ff6b35 100%);
+      color: white;
+      padding: 16px;
+      border: none;
+      width: 100%;
+      border-radius: 0;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      z-index: 100;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    }
+
+    .cart-button:hover {
+      background: linear-gradient(135deg, #b83228 0%, #e55a2b 100%);
+      transform: translateY(-2px);
+    }
+
+    .cart-button:active {
+      transform: translateY(0);
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.5);
+      backdrop-filter: blur(4px);
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: 10% auto;
+      padding: 24px;
+      border: none;
+      width: 90%;
+      max-width: 500px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from { 
+        transform: translateY(-50px);
+        opacity: 0;
+      }
+      to { 
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .close-button {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: color 0.3s ease;
+      background: none;
+      border: none;
+      padding: 0;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .close-button:hover,
+    .close-button:focus {
+      color: #d33a2d;
+    }
+
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #eee;
+      transition: background-color 0.3s ease;
+    }
+
+    .cart-item:hover {
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      padding: 12px 8px;
+      margin: 0 -8px;
+    }
+
+    .cart-item-details {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex: 1;
+    }
+
+    .item-name {
+      font-weight: 600;
+      color: #333;
+    }
+
+    .item-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .quantity-btn {
+      background: #d33a2d;
+      color: white;
+      border: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .quantity-btn:hover {
+      background: #b83228;
+      transform: scale(1.1);
+    }
+
+    .quantity {
+      font-weight: 600;
+      min-width: 20px;
+      text-align: center;
+    }
+
+    .item-total {
+      font-weight: 600;
+      color: #d33a2d;
+    }
+
+    .remove-from-cart {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      padding: 8px;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+      color: #999;
+    }
+
+    .remove-from-cart:hover {
+      background-color: #ffebee;
+      color: #d33a2d;
+    }
+
+    #cart-total {
+      text-align: right;
+      margin-top: 20px;
+      font-size: 20px;
+      padding: 16px 0;
+      border-top: 2px solid #eee;
+    }
+
+    .checkout-button {
+      background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+      color: white;
+      padding: 16px;
+      border: none;
+      width: 100%;
+      border-radius: 12px;
+      font-weight: bold;
+      font-size: 16px;
+      margin-top: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .checkout-button:hover {
+      background: linear-gradient(135deg, #45a049 0%, #3d8b40 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+    }
+
+    .cart-button span {
+      position: absolute;
+      right: 16px;
+      top: 8px;
+      background-color: #ffd700;
+      color: #333;
+      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-weight: bold;
+      min-width: 20px;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      animation: bounce 0.6s ease;
+    }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-10px); }
+      60% { transform: translateY(-5px); }
+    }
+
+    .tabs {
+      display: flex;
+      padding: 8px 16px 16px;
+      gap: 8px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tabs button {
+      flex: 0 0 auto;
+      padding: 10px 12px;
+      border-radius: 20px;
+      border: 2px solid #e0e0e0;
+      background-color: white;
+      font-weight: 600;
+      color: #666;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+      min-width: auto;
+    }
+
+    .tabs button:hover {
+      border-color: #d33a2d;
+      color: #d33a2d;
+      transform: translateY(-2px);
+    }
+
+    .tabs button.active {
+      background: linear-gradient(135deg, #d33a2d 0%, #ff6b35 100%);
+      color: white;
+      border-color: #d33a2d;
+      box-shadow: 0 4px 12px rgba(211, 58, 45, 0.3);
+    }
+
+    .section-title {
+      padding: 0 16px;
+      margin-top: 16px;
+    }
+
+    .section-title h2 {
+      color: #d33a2d;
+      font-size: 20px;
+      margin-bottom: 4px;
+    }
+
+    .section-title p {
+      color: #777;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .product-card {
+      margin: 16px;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid #eee;
+      display: flex;
+      min-height: 120px;
+      background: white;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .product-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+      border-color: #d33a2d;
+    }
+
+    :root {
+      --thumb-size: clamp(84px, 24vw, 120px);
+    }
+
+    .product-card img {
+      width: var(--thumb-size);
+      height: var(--thumb-size);
+      object-fit: cover;
+      flex-shrink: 0;
+      transition: transform 0.3s ease;
+    }
+
+    .product-card:hover img {
+      transform: scale(1.05);
+    }
+
+    .product-details {
+      padding: 12px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .product-details h3 {
+      font-size: 16px;
+      margin-bottom: 4px;
+      color: #333;
+      font-weight: 600;
+    }
+
+    .product-details p {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 8px;
+    }
+
+    .product-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+    }
+
+    .prep-time {
+      color: #666;
+      background-color: #f0f2f5;
+      padding: 2px 6px;
+      border-radius: 8px;
+      font-size: 11px;
+    }
+
+    .price {
+      color: #d33a2d;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .price-add {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      padding: 12px;
+      margin-left: auto;
+    }
+
+    .add-btn {
+      background: linear-gradient(135deg, #ffab40 0%, #ff9100 100%);
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(255, 171, 64, 0.3);
+    }
+
+    .add-btn:hover {
+      background: linear-gradient(135deg, #ff9100 0%, #ff6f00 100%);
+      transform: scale(1.1);
+      box-shadow: 0 4px 12px rgba(255, 171, 64, 0.4);
+    }
+
+    .add-btn:active {
+      transform: scale(0.95);
+    }
+
+    /* Notificaciones */
+    .add-to-cart-notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 2000;
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+    }
+
+    .add-to-cart-notification.show {
+      transform: translateX(0);
+    }
+
+    .notification-content {
+      background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 25px;
+      box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+      font-weight: 500;
+    }
+
+    /* Estados vacíos */
+    .empty-cart {
+      text-align: center;
+      color: #999;
+      padding: 40px 20px;
+      font-style: italic;
+    }
+
+    /* Loading states */
+    .loading {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    /* Responsive improvements */
+    @media (max-width: 480px) {
+      body {
+        padding: 8px;
+      }
+      
+      .container {
+        border-radius: 8px;
+      }
+      
+      .product-card {
+        margin: 12px;
+        border-radius: 12px;
+      }
+      
+      .modal-content {
+        margin: 5% auto;
+        width: 95%;
+        padding: 20px;
+      }
+    }
+
+    /* Focus styles for accessibility */
+    button:focus,
+    input:focus {
+      outline: 2px solid #d33a2d;
+      outline-offset: 2px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>La Oaxaqueñaca</h1>
+    <p>Auténtica comida mexicana</p>
+  </div>
+
+  <div class="sticky-container">
+    <div class="search">
+      <input type="text" placeholder="🔍 Buscar platillos..." aria-label="Buscar platillos en el menú">
+    </div>
+
+    <div class="tabs" role="tablist" aria-label="Filtrar por categoría">
+      <button role="tab" data-category="all" aria-selected="true">Todos</button>
+      <button role="tab" data-category="Tacos" aria-selected="false">Tacos</button>
+      <button role="tab" data-category="Quesadillas" aria-selected="false">Quesadillas</button>
+      <button role="tab" data-category="Burritos" aria-selected="false">Burritos</button>
+      <button role="tab" data-category="Appetizers" aria-selected="false">Appetizers</button>
+    </div>
+  </div>
+
+  <main id="main-content" class="container">
+    <div id="product-container" role="region" aria-label="Lista de productos">
+    </div>
+  </main>
+
+  <button class="cart-button" aria-label="Ver carrito de compras">
+    🛒 Ver Carrito
+    <span id="cart-count" aria-live="polite">0</span>
+  </button>
+
+  <div id="cart-modal" class="modal" role="dialog" aria-labelledby="cart-title" aria-hidden="true">
+    <div class="modal-content">
+      <button class="close-button" aria-label="Cerrar carrito">&times;</button>
+      <h2 id="cart-title">Carrito de Compras</h2>
+      <div id="cart-items" role="region" aria-label="Productos en el carrito"></div>
+      <div id="cart-total" aria-live="polite"></div>
+      <button class="checkout-button" aria-label="Proceder al pago">Pagar</button>
+    </div>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
