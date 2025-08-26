@@ -540,16 +540,127 @@
       outline: 2px solid #d33a2d;
       outline-offset: 2px;
     }
+
+    /* Intro screen styles (minimalista y llamativo) */
+    .intro-screen {
+      font-family: Georgia, 'Times New Roman', Times, serif;
+      color: #111;
+      position: relative;
+    }
+
+    #intro-avatar {
+      width: 220px;
+      height: 220px;
+      object-fit: cover;
+      border-radius: 50%;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+      display: block;
+    }
+
+    .intro-options {
+      width: 90%;
+      max-width: 520px;
+      margin-top: 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      padding: 0 8px;
+    }
+
+    .intro-option {
+      background: #000;
+      color: #fff;
+      padding: 22px 18px;
+      border-radius: 14px;
+      font-size: clamp(36px, 10vw, 64px);
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      border: none;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.25);
+      text-transform: uppercase;
+      white-space: nowrap;
+      text-align: center;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .intro-option:active { transform: translateY(1px); }
+
+    @media (max-width: 480px) {
+      .intro-option { font-size: clamp(24px, 8vw, 40px); padding: 16px 12px; }
+      #intro-avatar { width: 160px; height: 160px; }
+    }
   </style>
 </head>
 <body>
 
-  <div class="header">
+  <!-- Intro screens wrapper -->
+  <div id="intro-root" aria-hidden="false">
+    <!-- Screen 1: avatar + three big buttons -->
+    <section id="intro-screen-1" class="intro-screen" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; background: white;">
+      <div style="margin-top: 40px;">
+        <img id="intro-avatar" src="perfil.jpg" alt="Avatar" style="width: 220px; height: 220px; object-fit: cover; border-radius: 50%; box-shadow: 0 10px 40px rgba(0,0,0,0.25);">
+      </div>
+      <div>
+        <h1>¡PEDI YA!</h1>
+      </div>
+      <div class="intro-options">
+        <button class="intro-option" data-option="pickup">PICKUP</button>
+        <button class="intro-option" data-option="delivery">DELIVERY</button>
+        <button class="intro-option" data-option="mesa">MESA</button>
+      </div>
+
+      <div style="position: absolute; bottom: 28px; width: 100%; text-align: center; color: #999; font-size: 14px;">Toca una opción para continuar</div>
+    </section>
+
+    <!-- Screen 2: placeholder - will be refined later -->
+    <section id="intro-screen-2" class="intro-screen" style="display: none; flex-direction: column; align-items: center; justify-content: flex-start; min-height: 100vh; background: white; padding-top: 32px; position: relative;">
+  <div style="width: 100%; display: flex; justify-content: center; align-items: flex-start; gap: 14px; margin-bottom: 18px;">
+    <button id="ver-menu-btn" aria-label="Ver menú completo" style="background: #fff; color: #d33a2d; border: none; border-radius: 28px; min-width: 170px; height: 54px; box-shadow: 0 4px 16px rgba(0,0,0,0.18); font-size: 1.3rem; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; gap: 10px; padding: 0 22px;">
+      🍽️<span style="font-size: 1.1rem; font-weight: 600;">VER MENÚ</span>
+    </button>
+    <button id="cart-float-btn" aria-label="Ver carrito" style="background: #fff; color: #d33a2d; border: none; border-radius: 28px; min-width: 170px; height: 54px; box-shadow: 0 4px 16px rgba(0,0,0,0.18); font-size: 1.3rem; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; gap: 10px; padding: 0 22px;">
+      🛒 <span style="font-size: 1.1rem; font-weight: 600;">VER MI PEDIDO</span>
+    </button>
+  </div>
+  <h2 style="font-size: 2rem; font-weight: bold; letter-spacing: 1px; margin-bottom: 12px;">LOS MÁS PEDIDOS</h2>
+  <div class="carousel-block" id="carousel-mas-pedidos" aria-label="Carrusel de los más pedidos" style="width: 100%; max-width: 380px; margin: 0 auto; display: flex; flex-direction: column; align-items: center;">
+  <div class="carousel-slide" style="width: 100%; display: flex; flex-direction: column; align-items: center; background: #fafafa; border-radius: 18px; box-shadow: 0 4px 32px 0 rgba(0,0,0,0.28); padding: 14px 8px;">
+    <img class="carousel-img" src="" alt="Plato más pedido" style="width: 90vw; max-width: 330px; height: 180px; object-fit: cover; border-radius: 14px; background: #eee;">
+    <div class="carousel-info" style="width: 100%; display: flex; flex-direction: row; align-items: center; justify-content: center; margin-top: 12px; gap: 10px;">
+      <div style="flex: 1; min-width: 0; text-align: center;">
+        <span class="carousel-nombre" style="font-weight: bold; font-size: 1.1rem; display: block;"></span>
+        <span class="carousel-precio" style="color: #009688; font-size: 1.05rem; margin: 4px 0 8px 0; display: block;"></span>
+      </div>
+      <button class="carousel-add" aria-label="Agregar al carrito" style="background: #d33a2d; color: white; border-radius: 50%; width: 42px; height: 42px; font-size: 1.4rem; border: none; cursor: pointer;">+</button>
+    </div>
+  </div>
+  <div class="carousel-dots" style="display: flex; justify-content: center; align-items: center; gap: 7px; margin: 12px 0 0 0;"></div>
+</div>
+  <h2 style="font-size: 2rem; font-weight: bold; letter-spacing: 1px; margin: 32px 0 12px 0;">OFERTAS ESPECIALES</h2>
+  <div class="carousel-block" id="carousel-ofertas" aria-label="Carrusel de ofertas especiales" style="width: 100%; max-width: 380px; margin: 0 auto; display: flex; flex-direction: column; align-items: center;">
+  <div class="carousel-slide" style="width: 100%; display: flex; flex-direction: column; align-items: center; background: #fafafa; border-radius: 18px; box-shadow: 0 4px 32px 0 rgba(0,0,0,0.28); padding: 14px 8px;">
+    <img class="carousel-img" src="" alt="Plato en oferta" style="width: 90vw; max-width: 330px; height: 180px; object-fit: cover; border-radius: 14px; background: #eee;">
+    <div class="carousel-info" style="width: 100%; display: flex; flex-direction: row; align-items: center; justify-content: center; margin-top: 12px; gap: 10px;">
+      <div style="flex: 1; min-width: 0; text-align: center;">
+        <span class="carousel-nombre" style="font-weight: bold; font-size: 1.1rem; display: block;"></span>
+        <span class="carousel-precio" style="color: #009688; font-size: 1.05rem; margin: 4px 0 8px 0; display: block;"></span>
+      </div>
+      <button class="carousel-add" aria-label="Agregar al carrito" style="background: #d33a2d; color: white; border-radius: 50%; width: 42px; height: 42px; font-size: 1.4rem; border: none; cursor: pointer;">+</button>
+    </div>
+  </div>
+  <div class="carousel-dots" style="display: flex; justify-content: center; align-items: center; gap: 7px; margin: 12px 0 0 0;"></div>
+</div>
+  <button id="ver-menu-completo" style="margin-top: 36px; background: #d33a2d; color: white; font-size: 1.4rem; font-weight: bold; border: none; border-radius: 8px; padding: 18px 0; width: 100%; max-width: 340px; cursor: pointer;">VER EL MENÚ COMPLETO</button>
+</section>
+  </div>
+
+  <div class="header" style="display: none;" aria-hidden="true">
     <h1>La Oaxaqueñaca</h1>
     <p>Auténtica comida mexicana</p>
   </div>
 
-  <div class="sticky-container">
+  <div class="sticky-container" style="display: none;">
     <div class="search">
       <input type="text" placeholder="🔍 Buscar platillos..." aria-label="Buscar platillos en el menú">
     </div>
@@ -563,12 +674,12 @@
     </div>
   </div>
 
-  <main id="main-content" class="container">
+  <main id="main-content" class="container" style="display: none;">
     <div id="product-container" role="region" aria-label="Lista de productos">
     </div>
   </main>
 
-  <button class="cart-button" aria-label="Ver carrito de compras">
+  <button class="cart-button" aria-label="Ver carrito de compras" style="display: none;">
     🛒 Ver Carrito
     <span id="cart-count" aria-live="polite">0</span>
   </button>
