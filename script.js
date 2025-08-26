@@ -411,7 +411,7 @@ function renderCart() {
   if (cartItems.length === 0) {
     cartItemsContainer.innerHTML = '<p class="empty-cart">Tu carrito está vacío</p>';
     cartTotalContainer.innerHTML = '';
-    checkoutButton.style.display = 'none';
+    if (checkoutButton) checkoutButton.style.display = 'none';
     return;
   }
 
@@ -435,7 +435,10 @@ function renderCart() {
 
   const total = cartManager.getCartTotal();
   cartTotalContainer.innerHTML = `<strong>Total: $${total.toFixed(2)}</strong>`;
-  checkoutButton.style.display = 'block';
+  if (checkoutButton) {
+    checkoutButton.style.display = 'block';
+    addCheckoutListener(); // <-- Asegura que el botón tenga su listener
+  }
 }
 
 // Manejar controles de cantidad en el carrito
@@ -739,8 +742,7 @@ function addCheckoutListener() {
   window.location.href = waUrl;
   });
 }
-// Llama a esta función al final de renderCart
-addCheckoutListener();
+// Esta función ya se llama desde renderCart()
 
 // Manejar teclas de acceso rápido
 document.addEventListener('keydown', (e) => {
