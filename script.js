@@ -115,7 +115,7 @@ const fallbackImages = [
 ];
 
 function getImageUrl(product) {
-  return UNIFIED_IMAGE_URL;
+  return product.image || UNIFIED_IMAGE_URL;
 }
 
 function handleImageError(imgEl, productId) {
@@ -475,6 +475,231 @@ const firstTab = document.querySelector('.tabs button[data-category="all"]');
 firstTab.classList.add('active');
 firstTab.setAttribute('aria-selected', 'true');
 
+// ------------------------
+// Lógica de pantallas intro
+// ------------------------
+
+const introRoot = document.getElementById('intro-root');
+const introScreen1 = document.getElementById('intro-screen-1');
+const introScreen2 = document.getElementById('intro-screen-2');
+const continueBtn = document.getElementById('continue-to-app');
+
+// Guardar la opción seleccionada
+let selectedIntroOption = null;
+
+function showScreen(screenId) {
+  // ocultar todas las pantallas intro
+  document.querySelectorAll('.intro-screen').forEach(s => s.style.display = 'none');
+  const s = document.getElementById(screenId);
+  if (s) s.style.display = 'flex';
+}
+
+// --- Lógica de los carruseles en la pantalla 2 ---
+
+// Botón flotante de carrito en pantalla 2
+const cartFloatBtn = document.getElementById('cart-float-btn'); // sigue funcionando igual tras mover el botón
+
+// Botón "VER MENÚ" en la cabecera de la pantalla 2
+const verMenuBtn = document.getElementById('ver-menu-btn');
+if (verMenuBtn) {
+  verMenuBtn.addEventListener('click', () => {
+    // Ocultar intro 2 y mostrar la app principal (igual que 'VER EL MENÚ COMPLETO')
+    const screen2 = document.getElementById('intro-screen-2');
+    screen2.style.display = 'none';
+    document.querySelector('.header').style.display = '';
+    document.querySelector('.sticky-container').style.display = '';
+    document.getElementById('main-content').style.display = '';
+    document.querySelector('.cart-button').style.display = '';
+  });
+}
+if (cartFloatBtn) {
+  cartFloatBtn.style.display = 'none'; // Oculto al inicio
+  cartFloatBtn.addEventListener('click', () => {
+    const cartModal = document.getElementById('cart-modal');
+    if (cartModal) {
+      renderCart();
+      cartModal.style.display = 'block';
+      document.body.style.overflow = 'hidden';
+    }
+  });
+}
+
+// Mostrar/ocultar el botón de carrito flotante según el contenido del carrito
+function updateCartFloatBtnVisibility() {
+  if (!cartFloatBtn) return;
+  const cart = localStorage.getItem('oaxaquenaca-cart');
+  let count = 0;
+  if (cart) {
+    try {
+      const obj = JSON.parse(cart);
+      count = Object.values(obj).reduce((a, b) => a + b, 0);
+    } catch {}
+  }
+  cartFloatBtn.style.display = count > 0 ? 'flex' : 'none';
+}
+
+// Llamar al actualizar el carrito
+const originalAddToCart = CartManager.prototype.addToCart;
+CartManager.prototype.addToCart = function(productId, quantity = 1) {
+  originalAddToCart.call(this, productId, quantity);
+  updateCartFloatBtnVisibility();
+};
+const originalRemoveFromCart = CartManager.prototype.removeFromCart;
+CartManager.prototype.removeFromCart = function(productId) {
+  originalRemoveFromCart.call(this, productId);
+  updateCartFloatBtnVisibility();
+};
+const originalClearCart = CartManager.prototype.clearCart;
+CartManager.prototype.clearCart = function() {
+  originalClearCart.call(this);
+  updateCartFloatBtnVisibility();
+};
+// Inicializar visibilidad al cargar
+updateCartFloatBtnVisibility();
+
+
+function getMasPedidos() {
+  // Los 3 primeros productos (más pedidos)
+  return products.slice(0, 3);
+}
+
+function getOfertasEspeciales() {
+  // Selecciona productos que NO estén en los más pedidos y tengan imágenes
+  const masPedidosIds = getMasPedidos().map(p => p.id);
+  // Aquí puedes personalizar los ids de ofertas si lo deseas
+  const ofertas = products.filter(p => !masPedidosIds.includes(p.id));
+  // Si hay menos de 3, repite algunos para que siempre haya imágenes
+  if (ofertas.length < 3) {
+    return ofertas.concat(products.slice(0, 3 - ofertas.length));
+  }
+  return ofertas.slice(0, 3);
+}
+
+function renderCarousel(carouselId, items) {
+  // Si es el carrusel de ofertas, asignar las imágenes locales
+  if (carouselId === 'carousel-ofertas') {
+    const ofertasImgs = ['casa.jpg', 'raw.png', 'astrowolf.png'];
+    for (let i = 0; i < Math.min(items.length, 3); i++) {
+      items[i].image = ofertasImgs[i];
+    }
+  }
+  let idx = 0;
+  const carousel = document.getElementById(carouselId);
+  const slide = carousel.querySelector('.carousel-slide');
+  const img = slide.querySelector('.carousel-img');
+  const nombre = slide.querySelector('.carousel-nombre');
+  const precio = slide.querySelector('.carousel-precio');
+  const addBtn = slide.querySelector('.carousel-add');
+  const dotsContainer = carousel.querySelector('.carousel-dots');
+
+  // Crear puntos de paginación
+  dotsContainer.innerHTML = '';
+  const dots = items.map((_, i) => {
+    const dot = document.createElement('span');
+    dot.style.width = '10px';
+    dot.style.height = '10px';
+    dot.style.borderRadius = '50%';
+    dot.style.background = '#ccc';
+    dot.style.display = 'inline-block';
+    dot.style.transition = 'background 0.2s';
+    dot.style.cursor = 'pointer';
+    dot.onclick = () => { idx = i; update(true); };
+    dotsContainer.appendChild(dot);
+    return dot;
+  });
+
+  function update(stopAutoplay) {
+    const p = items[idx];
+    img.src = getImageUrl(p);
+    img.alt = p.name;
+    nombre.textContent = p.name;
+    precio.textContent = `$${p.price.toFixed(2)}`;
+    addBtn.onclick = () => cartManager.addToCart(p.id, 1);
+    dots.forEach((dot, i) => {
+      dot.style.background = i === idx ? '#d33a2d' : '#ccc';
+    });
+    if (stopAutoplay) {
+      clearInterval(interval);
+      interval = setInterval(next, 3000);
+    }
+  }
+
+  function next() {
+    idx = (idx + 1) % items.length;
+    update();
+  }
+
+  // Auto-avance cada 3 segundos
+  let interval = setInterval(next, 3000);
+  addBtn.addEventListener('click', () => {
+    clearInterval(interval);
+    interval = setInterval(next, 3000);
+  });
+
+  // Soporte para swipe táctil
+  let startX = null;
+  slide.addEventListener('touchstart', (e) => {
+    startX = e.touches[0].clientX;
+  });
+  slide.addEventListener('touchend', (e) => {
+    if (startX === null) return;
+    let endX = e.changedTouches[0].clientX;
+    let dx = endX - startX;
+    if (Math.abs(dx) > 40) {
+      if (dx < 0) {
+        idx = (idx + 1) % items.length;
+      } else {
+        idx = (idx - 1 + items.length) % items.length;
+      }
+      update(true);
+    }
+    startX = null;
+  });
+
+  update();
+}
+
+function mostrarPantallaCarruseles() {
+  document.getElementById('intro-screen-1').style.display = 'none';
+  const screen2 = document.getElementById('intro-screen-2');
+  screen2.style.display = 'flex';
+  renderCarousel('carousel-mas-pedidos', getMasPedidos());
+  renderCarousel('carousel-ofertas', getOfertasEspeciales());
+  document.getElementById('ver-menu-completo').onclick = () => {
+    screen2.style.display = 'none';
+    document.querySelector('.header').style.display = '';
+    document.querySelector('.sticky-container').style.display = '';
+    document.getElementById('main-content').style.display = '';
+    document.querySelector('.cart-button').style.display = '';
+  };
+}
+
+// manejar clicks en las opciones grandes
+document.querySelectorAll('.intro-option').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    selectedIntroOption = btn.dataset.option;
+    mostrarPantallaCarruseles();
+    // marcar visualmente la opción seleccionada
+    document.querySelectorAll('.intro-option').forEach(b => b.style.opacity = '0.6');
+    btn.style.opacity = '1';
+    btn.style.transform = 'scale(1.02)';
+    // pequeña espera para animación y luego mostrar la siguiente pantalla
+    setTimeout(() => showScreen('intro-screen-2'), 220);
+  });
+});
+
+continueBtn.addEventListener('click', () => {
+  // ocultar intro y mostrar la app
+  introRoot.style.display = 'none';
+  document.querySelector('.header').style.display = '';
+  document.querySelector('.sticky-container').style.display = '';
+  document.getElementById('main-content').style.display = '';
+  document.querySelector('.cart-button').style.display = '';
+
+  // opcional: puedes usar selectedIntroOption para personalizar la experiencia
+  console.log('Opción seleccionada en intro:', selectedIntroOption);
+});
+
 // Función para checkout (redirigir a WhatsApp)
 document.querySelector('.checkout-button').addEventListener('click', () => {
   const cartItems = cartManager.getCartItems();
@@ -485,7 +710,19 @@ document.querySelector('.checkout-button').addEventListener('click', () => {
 
   const total = cartManager.getCartTotal();
   const lines = cartItems.map(item => `- ${item.name} x${item.quantity}: $${item.total.toFixed(2)}`).join('\n');
-  const message = `Hola, quiero hacer este pedido:\n\n${lines}\n\nTotal: $${total.toFixed(2)}\n`; 
+
+  // Obtener la opción seleccionada
+  let opcion = '';
+  if (typeof selectedIntroOption !== 'undefined' && selectedIntroOption) {
+    let textoOpcion = '';
+    if (selectedIntroOption === 'pickup') textoOpcion = 'Para retirar (pickup)';
+    else if (selectedIntroOption === 'delivery') textoOpcion = 'Para delivery';
+    else if (selectedIntroOption === 'mesa') textoOpcion = 'Para comer en mesa';
+    else textoOpcion = selectedIntroOption;
+    opcion = `Opción elegida: ${textoOpcion}\n\n`;
+  }
+
+  const message = `Hola, quiero hacer este pedido:\n${opcion}${lines}\n\nTotal: $${total.toFixed(2)}\n`;
 
   const phone = '5491162380446';
   const waUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
