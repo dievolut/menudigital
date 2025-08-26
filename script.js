@@ -724,7 +724,7 @@ document.querySelector('.checkout-button').addEventListener('click', () => {
 
   const message = `Hola, quiero hacer este pedido:\n${opcion}${lines}\n\nTotal: $${total.toFixed(2)}\n`;
 
-  const phone = '5491162380446';
+  const phone = '5491162380446'; // +54 11 62380446
   const waUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
 
   window.location.href = waUrl;
