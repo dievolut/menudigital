@@ -727,6 +727,8 @@ document.querySelector('.checkout-button').addEventListener('click', () => {
   const phone = '5491162380446'; // +54 11 62380446
   const waUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
 
+  console.log('selectedIntroOption:', selectedIntroOption);
+  console.log('waUrl:', waUrl);
   window.location.href = waUrl;
 });
 
