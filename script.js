@@ -701,7 +701,14 @@ continueBtn.addEventListener('click', () => {
 });
 
 // Función para checkout (redirigir a WhatsApp)
-document.querySelector('.checkout-button').addEventListener('click', () => {
+// Añadir event listener al botón checkout-button cada vez que se renderiza el carrito
+function addCheckoutListener() {
+  const checkoutButton = document.querySelector('.checkout-button');
+  if (!checkoutButton) return;
+  // Elimina listeners previos
+  const newButton = checkoutButton.cloneNode(true);
+  checkoutButton.parentNode.replaceChild(newButton, checkoutButton);
+  newButton.addEventListener('click', () => {
   const cartItems = cartManager.getCartItems();
   if (cartItems.length === 0) {
     alert('Tu carrito está vacío');
@@ -730,7 +737,10 @@ document.querySelector('.checkout-button').addEventListener('click', () => {
   console.log('selectedIntroOption:', selectedIntroOption);
   console.log('waUrl:', waUrl);
   window.location.href = waUrl;
-});
+  });
+}
+// Llama a esta función al final de renderCart
+addCheckoutListener();
 
 // Manejar teclas de acceso rápido
 document.addEventListener('keydown', (e) => {
