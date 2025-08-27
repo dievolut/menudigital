@@ -1,696 +1,208 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MENU DIGITAL BY @DIEVOLUT</title>
-  <meta name="description" content="MENU DIGITAL HECHO POR @DIEVOLUT">
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    body {
-      background-color: #f0f2f5;
-      padding: 16px;
-      line-height: 1.6;
-    }
-
-    .container {
-      max-width: 400px;
-      margin: auto;
-      background-color: white;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-
-    .header {
-      text-align: center;
-      padding: 20px 16px;
-      background: linear-gradient(135deg, #d33a2d 0%, #ff6b35 100%);
-      color: white;
-    }
-
-    .header h1 {
-      color: white;
-      font-size: 28px;
-      margin-bottom: 4px;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-    }
-
-    .header p {
-      color: rgba(255,255,255,0.9);
-      font-size: 14px;
-      font-weight: 300;
-    }
-
-    .sticky-container {
-      position: -webkit-sticky;
-      position: sticky;
-      top: 0;
-      background-color: white;
-      padding: 16px 0;
-      z-index: 10;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-
-    .search {
-      padding: 0 16px 16px;
-      position: relative;
-    }
-
-    .search input {
-      width: 100%;
-      padding: 12px 16px;
-      border-radius: 25px;
-      border: 2px solid #e0e0e0;
-      font-size: 16px;
-      transition: all 0.3s ease;
-      background-color: #f8f9fa;
-    }
-
-    .search input:focus {
-      outline: none;
-      border-color: #d33a2d;
-      background-color: white;
-      box-shadow: 0 0 0 3px rgba(211, 58, 45, 0.1);
-    }
-
-    .search input::placeholder {
-      color: #999;
-    }
-
-    .cart-button {
-      background: linear-gradient(135deg, #d33a2d 0%, #ff6b35 100%);
-      color: white;
-      padding: 16px;
-      border: none;
-      width: 100%;
-      border-radius: 0;
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      font-weight: bold;
-      font-size: 16px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      z-index: 100;
-      box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-    }
-
-    .cart-button:hover {
-      background: linear-gradient(135deg, #b83228 0%, #e55a2b 100%);
-      transform: translateY(-2px);
-    }
-
-    .cart-button:active {
-      transform: translateY(0);
-    }
-
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgba(0,0,0,0.5);
-      backdrop-filter: blur(4px);
-      animation: fadeIn 0.3s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    .modal-content {
-      background-color: #fefefe;
-      margin: 10% auto;
-      padding: 24px;
-      border: none;
-      width: 90%;
-      max-width: 500px;
-      border-radius: 16px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-      animation: slideIn 0.3s ease;
-    }
-
-    @keyframes slideIn {
-      from { 
-        transform: translateY(-50px);
-        opacity: 0;
-      }
-      to { 
-        transform: translateY(0);
-        opacity: 1;
-      }
-    }
-
-    .close-button {
-      color: #aaa;
-      float: right;
-      font-size: 28px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: color 0.3s ease;
-      background: none;
-      border: none;
-      padding: 0;
-      width: 30px;
-      height: 30px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .close-button:hover,
-    .close-button:focus {
-      color: #d33a2d;
-    }
-
-    .cart-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 0;
-      border-bottom: 1px solid #eee;
-      transition: background-color 0.3s ease;
-    }
-
-    .cart-item:hover {
-      background-color: #f8f9fa;
-      border-radius: 8px;
-      padding: 12px 8px;
-      margin: 0 -8px;
-    }
-
-    .cart-item-details {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      flex: 1;
-    }
-
-    .item-name {
-      font-weight: 600;
-      color: #333;
-    }
-
-    .item-controls {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .quantity-btn {
-      background: #d33a2d;
-      color: white;
-      border: none;
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      cursor: pointer;
-      font-weight: bold;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .quantity-btn:hover {
-      background: #b83228;
-      transform: scale(1.1);
-    }
-
-    .quantity {
-      font-weight: 600;
-      min-width: 20px;
-      text-align: center;
-    }
-
-    .item-total {
-      font-weight: 600;
-      color: #d33a2d;
-    }
-
-    .remove-from-cart {
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 18px;
-      padding: 8px;
-      border-radius: 50%;
-      transition: all 0.3s ease;
-      color: #999;
-    }
-
-    .remove-from-cart:hover {
-      background-color: #ffebee;
-      color: #d33a2d;
-    }
-
-    #cart-total {
-      text-align: right;
-      margin-top: 20px;
-      font-size: 20px;
-      padding: 16px 0;
-      border-top: 2px solid #eee;
-    }
-
-    .checkout-button {
-      background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
-      color: white;
-      padding: 16px;
-      border: none;
-      width: 100%;
-      border-radius: 12px;
-      font-weight: bold;
-      font-size: 16px;
-      margin-top: 16px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .checkout-button:hover {
-      background: linear-gradient(135deg, #45a049 0%, #3d8b40 100%);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
-    }
-
-    .cart-button span {
-      position: absolute;
-      right: 16px;
-      top: 8px;
-      background-color: #ffd700;
-      color: #333;
-      font-size: 12px;
-      padding: 4px 8px;
-      border-radius: 12px;
-      font-weight: bold;
-      min-width: 20px;
-      text-align: center;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-      animation: bounce 0.6s ease;
-    }
-
-    @keyframes bounce {
-      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-      40% { transform: translateY(-10px); }
-      60% { transform: translateY(-5px); }
-    }
-
-    .tabs {
-      display: flex;
-      padding: 8px 16px 16px;
-      gap: 8px;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
-    }
-
-    .tabs::-webkit-scrollbar {
-      display: none;
-    }
-
-    .tabs button {
-      flex: 0 0 auto;
-      padding: 10px 12px;
-      border-radius: 20px;
-      border: 2px solid #e0e0e0;
-      background-color: white;
-      font-weight: 600;
-      color: #666;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      white-space: nowrap;
-      min-width: auto;
-    }
-
-    .tabs button:hover {
-      border-color: #d33a2d;
-      color: #d33a2d;
-      transform: translateY(-2px);
-    }
-
-    .tabs button.active {
-      background: linear-gradient(135deg, #d33a2d 0%, #ff6b35 100%);
-      color: white;
-      border-color: #d33a2d;
-      box-shadow: 0 4px 12px rgba(211, 58, 45, 0.3);
-    }
-
-    .section-title {
-      padding: 0 16px;
-      margin-top: 16px;
-    }
-
-    .section-title h2 {
-      color: #d33a2d;
-      font-size: 20px;
-      margin-bottom: 4px;
-    }
-
-    .section-title p {
-      color: #777;
-      font-size: 13px;
-      margin-bottom: 8px;
-    }
-
-    .product-card {
-      margin: 16px;
-      border-radius: 16px;
-      overflow: hidden;
-      border: 1px solid #eee;
-      display: flex;
-      min-height: 120px;
-      background: white;
-      transition: all 0.3s ease;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-      align-items: center; /* Asegura que el contenido esté centrado verticalmente */
-    }
-
-    :root {
-      --thumb-size: clamp(84px, 24vw, 120px);
-    }
-
-    .product-card img {
-      width: var(--thumb-size);
-      height: var(--thumb-size);
-      object-fit: cover;
-      flex-shrink: 0;
-      transition: transform 0.3s ease;
-      background-color: #f0f0f0; /* Color de fondo para imágenes con transparencia */
-    }
-
-    .product-card:hover img {
-      transform: scale(1.05);
-    }
-
-    .product-details {
-      padding: 12px;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .product-details h3 {
-      font-size: 16px;
-      margin-bottom: 4px;
-      color: #333;
-      font-weight: 600;
-    }
-
-    .product-details p {
-      font-size: 13px;
-      color: #666;
-      margin-bottom: 8px;
-    }
-
-    .product-info {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 12px;
-    }
-
-    .prep-time {
-      color: #666;
-      background-color: #f0f2f5;
-      padding: 2px 6px;
-      border-radius: 8px;
-      font-size: 11px;
-    }
-
-    .price {
-      color: #d33a2d;
-      font-weight: bold;
-      font-size: 16px;
-    }
-
-    .price-add {
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      padding: 12px;
-      margin-left: auto;
-    }
-
-    .add-btn {
-      background: linear-gradient(135deg, #ffab40 0%, #ff9100 100%);
-      color: white;
-      border: none;
-      padding: 8px 12px;
-      border-radius: 50%;
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: bold;
-      width: 36px;
-      height: 36px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.3s ease;
-      box-shadow: 0 2px 8px rgba(255, 171, 64, 0.3);
-    }
-
-    .add-btn:hover {
-      background: linear-gradient(135deg, #ff9100 0%, #ff6f00 100%);
-      transform: scale(1.1);
-      box-shadow: 0 4px 12px rgba(255, 171, 64, 0.4);
-    }
-
-    .add-btn:active {
-      transform: scale(0.95);
-    }
-
-    /* Notificaciones */
-    .add-to-cart-notification {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 2000;
-      transform: translateX(100%);
-      transition: transform 0.3s ease;
-    }
-
-    .add-to-cart-notification.show {
-      transform: translateX(0);
-    }
-
-    .notification-content {
-      background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
-      color: white;
-      padding: 12px 20px;
-      border-radius: 25px;
-      box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
-      font-weight: 500;
-    }
-
-    /* Estados vacíos */
-    .empty-cart {
-      text-align: center;
-      color: #999;
-      padding: 40px 20px;
-      font-style: italic;
-    }
-
-    /* Loading states */
-    .loading {
-      opacity: 0.6;
-      pointer-events: none;
-    }
-
-    /* Responsive improvements */
-    @media (max-width: 480px) {
-      body {
-        padding: 8px;
-      }
-      
-      .container {
-        border-radius: 8px;
-      }
-      
-      .product-card {
-        margin: 12px;
-        border-radius: 12px;
-      }
-      
-      .modal-content {
-        margin: 5% auto;
-        width: 95%;
-        padding: 20px;
-      }
-    }
-
-    /* Focus styles for accessibility */
-    button:focus,
-    input:focus {
-      outline: 2px solid #d33a2d;
-      outline-offset: 2px;
-    }
-
-    /* Intro screen styles (minimalista y llamativo) */
-    .intro-screen {
-      font-family: Georgia, 'Times New Roman', Times, serif;
-      color: #111;
-      position: relative;
-    }
-
-    #intro-avatar {
-      width: 220px;
-      height: 220px;
-      object-fit: cover;
-      border-radius: 50%;
-      box-shadow: 0 12px 40px rgba(0,0,0,0.25);
-      display: block;
-    }
-
-    .intro-options {
-      width: 90%;
-      max-width: 520px;
-      margin-top: 36px;
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-      padding: 0 8px;
-    }
-
-    .intro-option {
-      background: #000;
-      color: #fff;
-      padding: 22px 18px;
-      border-radius: 14px;
-      font-size: clamp(36px, 10vw, 64px);
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      border: none;
-      box-shadow: 0 6px 24px rgba(0,0,0,0.25);
-      text-transform: uppercase;
-      white-space: nowrap;
-      text-align: center;
-      line-height: 1;
-      cursor: pointer;
-    }
-
-    .intro-option:active { transform: translateY(1px); }
-
-    @media (max-width: 480px) {
-      .intro-option { font-size: clamp(24px, 8vw, 40px); padding: 16px 12px; }
-      #intro-avatar { width: 160px; height: 160px; }
-    }
-  </style>
-</head>
-<body>
-
-  <!-- Intro screens wrapper -->
-  <div id="intro-root" aria-hidden="false">
-    <!-- Screen 1: avatar + three big buttons -->
-    <section id="intro-screen-1" class="intro-screen" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; background: white;">
-      <div style="margin-top: 40px;">
-        <img id="intro-avatar" src="perfil.jpg" alt="Avatar" style="width: 220px; height: 220px; object-fit: cover; border-radius: 50%; box-shadow: 0 10px 40px rgba(0,0,0,0.25);">
-      </div>
-      <div>
-        <h1>¡PEDI YA!</h1>
-      </div>
-      <div class="intro-options">
-        <button class="intro-option" data-option="pickup">PICKUP</button>
-        <button class="intro-option" data-option="delivery">DELIVERY</button>
-        <button class="intro-option" data-option="mesa">MESA</button>
-      </div>
-
-      <div style="position: absolute; bottom: 28px; width: 100%; text-align: center; color: #999; font-size: 14px;">Toca una opción para continuar</div>
-    </section>
-
-    <!-- Screen 2: placeholder - will be refined later -->
-    <section id="intro-screen-2" class="intro-screen" style="display: none; flex-direction: column; align-items: center; justify-content: flex-start; min-height: 100vh; background: white; padding-top: 32px; position: relative;">
-  <div style="width: 100%; display: flex; justify-content: center; align-items: flex-start; gap: 14px; margin-bottom: 18px;">
-    <button id="ver-menu-btn" aria-label="Ver menú completo" style="background: #fff; color: #d33a2d; border: none; border-radius: 28px; min-width: 170px; height: 54px; box-shadow: 0 4px 16px rgba(0,0,0,0.18); font-size: 1.3rem; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; gap: 10px; padding: 0 22px;">
-      🍽️<span style="font-size: 1.1rem; font-weight: 600;">VER MENÚ</span>
-    </button>
-    <button id="cart-float-btn" aria-label="Ver carrito" style="background: #fff; color: #d33a2d; border: none; border-radius: 28px; min-width: 170px; height: 54px; box-shadow: 0 4px 16px rgba(0,0,0,0.18); font-size: 1.3rem; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; gap: 10px; padding: 0 22px;">
-      🛒 <span style="font-size: 1.1rem; font-weight: 600;">VER MI PEDIDO</span>
-    </button>
-  </div>
-  <h2 style="font-size: 2rem; font-weight: bold; letter-spacing: 1px; margin-bottom: 12px;">LOS MÁS PEDIDOS</h2>
-  <div class="carousel-block" id="carousel-mas-pedidos" aria-label="Carrusel de los más pedidos" style="width: 100%; max-width: 380px; margin: 0 auto; display: flex; flex-direction: column; align-items: center;">
-  <div class="carousel-slide" style="width: 100%; display: flex; flex-direction: column; align-items: center; background: #fafafa; border-radius: 18px; box-shadow: 0 4px 32px 0 rgba(0,0,0,0.28); padding: 14px 8px;">
-    <img class="carousel-img" src="1.jpg" alt="Plato más pedido" style="width: 90vw; max-width: 330px; height: 180px; object-fit: cover; border-radius: 14px; background: #eee;">
-    <div class="carousel-info" style="width: 100%; display: flex; flex-direction: row; align-items: center; justify-content: center; margin-top: 12px; gap: 10px;">
-      <div style="flex: 1; min-width: 0; text-align: center;">
-        <span class="carousel-nombre" style="font-weight: bold; font-size: 1.1rem; display: block;"></span>
-        <span class="carousel-precio" style="color: #009688; font-size: 1.05rem; margin: 4px 0 8px 0; display: block;"></span>
-      </div>
-      <button class="carousel-add" aria-label="Agregar al carrito" style="background: #d33a2d; color: white; border-radius: 50%; width: 42px; height: 42px; font-size: 1.4rem; border: none; cursor: pointer;">+</button>
-    </div>
-  </div>
-  <div class="carousel-dots" style="display: flex; justify-content: center; align-items: center; gap: 7px; margin: 12px 0 0 0;"></div>
-</div>
-  <h2 style="font-size: 2rem; font-weight: bold; letter-spacing: 1px; margin: 32px 0 12px 0;">OFERTAS ESPECIALES</h2>
-  <div class="carousel-block" id="carousel-ofertas" aria-label="Carrusel de ofertas especiales" style="width: 100%; max-width: 380px; margin: 0 auto; display: flex; flex-direction: column; align-items: center;">
-  <div class="carousel-slide" style="width: 100%; display: flex; flex-direction: column; align-items: center; background: #fafafa; border-radius: 18px; box-shadow: 0 4px 32px 0 rgba(0,0,0,0.28); padding: 14px 8px;">
-    <img class="carousel-img" src="" alt="Plato en oferta" style="width: 90vw; max-width: 330px; height: 180px; object-fit: cover; border-radius: 14px; background: #eee;">
-    <div class="carousel-info" style="width: 100%; display: flex; flex-direction: row; align-items: center; justify-content: center; margin-top: 12px; gap: 10px;">
-      <div style="flex: 1; min-width: 0; text-align: center;">
-        <span class="carousel-nombre" style="font-weight: bold; font-size: 1.1rem; display: block;"></span>
-        <span class="carousel-precio" style="color: #009688; font-size: 1.05rem; margin: 4px 0 8px 0; display: block;"></span>
-      </div>
-      <button class="carousel-add" aria-label="Agregar al carrito" style="background: #d33a2d; color: white; border-radius: 50%; width: 42px; height: 42px; font-size: 1.4rem; border: none; cursor: pointer;">+</button>
-    </div>
-  </div>
-  <div class="carousel-dots" style="display: flex; justify-content: center; align-items: center; gap: 7px; margin: 12px 0 0 0;"></div>
-</div>
-  <button id="ver-menu-completo" style="margin-top: 36px; background: #d33a2d; color: white; font-size: 1.4rem; font-weight: bold; border: none; border-radius: 8px; padding: 18px 0; width: 100%; max-width: 340px; cursor: pointer;">VER EL MENÚ COMPLETO</button>
-</section>
-  </div>
-
-  <div class="header" style="display: none;" aria-hidden="true">
-    <h1>MENU DIGITAL</h1>
-    <p>Hecho por @dievolut</p>
-  </div>
-
-  <div class="sticky-container" style="display: none;">
-    <div class="search">
-      <input type="text" placeholder="🔍 Buscar platillos..." aria-label="Buscar platillos en el menú">
-    </div>
-
-    <div class="tabs" role="tablist" aria-label="Filtrar por categoría">
-      <button role="tab" data-category="all" aria-selected="true">Todos</button>
-      <button role="tab" data-category="Tacos" aria-selected="false">Tacos</button>
-      <button role="tab" data-category="Quesadillas" aria-selected="false">Quesadillas</button>
-      <button role="tab" data-category="Burritos" aria-selected="false">Burritos</button>
-      <button role="tab" data-category="Appetizers" aria-selected="false">Appetizers</button>
-    </div>
-  </div>
-
-  <main id="main-content" class="container" style="display: none;">
-    <div id="product-container" role="region" aria-label="Lista de productos">
-    </div>
-  </main>
-
-  <button class="cart-button" aria-label="Ver carrito de compras" style="display: none;">
-    🛒 Ver Carrito
-    <span id="cart-count" aria-live="polite">0</span>
-  </button>
-
-  <div id="cart-modal" class="modal" role="dialog" aria-labelledby="cart-title" aria-hidden="true">
-    <div class="modal-content">
-      <button class="close-button" aria-label="Cerrar carrito">&times;</button>
-      <h2 id="cart-title">Carrito de Compras</h2>
-      <div id="cart-items" role="region" aria-label="Productos en el carrito"></div>
-      <div id="cart-total" aria-live="polite"></div>
-      <button class="checkout-button" aria-label="Proceder al pago">Pagar</button>
-    </div>
-  </div>
+// 🍽️ La Oaxaqueñaca - Configuración
+// Archivo de configuración centralizada para la aplicación
+
+const CONFIG = {
+  // Información del restaurante
+  restaurant: {
+    name: 'La Oaxaqueñaca',
+    tagline: 'Auténtica comida mexicana',
+    description: 'Menú digital de La Oaxaqueñaca con tacos, quesadillas, burritos y más platillos mexicanos auténticos',
+    version: '2.0.0'
+  },
+
+  // Configuración de la aplicación
+  app: {
+    maxItemsPerCart: 99,
+    searchDebounceMs: 300,
+    notificationDuration: 2000,
+    localStorageKey: 'oaxaquenaca-cart'
+  },
+
+  // Configuración de precios
+  pricing: {
+    currency: 'USD',
+    currencySymbol: '$',
+    decimalPlaces: 2
+  },
+
+  // Configuración de categorías
+  categories: [
+    { id: 'all', name: 'Todos', color: '#d33a2d' },
+    { id: 'Tacos', name: 'Tacos', color: '#ff6b35' },
+    { id: 'Quesadillas', name: 'Quesadillas', color: '#ffab40' },
+    { id: 'Burritos', name: 'Burritos', color: '#4CAF50' },
+    { id: 'Appetizers', name: 'Appetizers', color: '#9C27B0' }
+  ],
+
+  // Configuración de filtros de precio
+  priceRanges: [
+    { id: 'all', name: 'Todos los precios', min: 0, max: null },
+    { id: '0-5', name: 'Menos de $5', min: 0, max: 5 },
+    { id: '5-8', name: '$5 - $8', min: 5, max: 8 },
+    { id: '8+', name: 'Más de $8', min: 8, max: null }
+  ],
+
+  // Configuración de ordenamiento
+  sortOptions: [
+    { id: 'name', name: 'Por nombre', field: 'name' },
+    { id: 'price-low', name: 'Precio: menor a mayor', field: 'price', order: 'asc' },
+    { id: 'price-high', name: 'Precio: mayor a menor', field: 'price', order: 'desc' },
+    { id: 'prep-time', name: 'Tiempo de preparación', field: 'prepTime' }
+  ],
+
+  // Configuración de alérgenos
+  allergens: {
+    'Gluten': { name: 'Gluten', icon: '🌾', description: 'Contiene trigo, cebada o centeno' },
+    'Lácteos': { name: 'Lácteos', icon: '🥛', description: 'Contiene leche o derivados lácteos' },
+    'Nueces': { name: 'Nueces', icon: '🥜', description: 'Contiene frutos secos' },
+    'Mariscos': { name: 'Mariscos', icon: '🦐', description: 'Contiene mariscos' },
+    'Huevos': { name: 'Huevos', icon: '🥚', description: 'Contiene huevos' },
+    'Soya': { name: 'Soya', icon: '🫘', description: 'Contiene soya' }
+  },
+
+  // Configuración de animaciones
+  animations: {
+    duration: {
+      fast: 200,
+      normal: 300,
+      slow: 500
+    },
+    easing: {
+      smooth: 'cubic-bezier(0.4, 0, 0.2, 1)',
+      bounce: 'cubic-bezier(0.68, -0.55, 0.265, 1.55)'
+    }
+  },
+
+  // Configuración de breakpoints responsive
+  breakpoints: {
+    mobile: 480,
+    tablet: 768,
+    desktop: 1024,
+    wide: 1200
+  },
+
+  // Configuración de colores
+  colors: {
+    primary: '#d33a2d',
+    secondary: '#ff6b35',
+    accent: '#ffab40',
+    success: '#4CAF50',
+    warning: '#ff9800',
+    error: '#f44336',
+    info: '#2196F3',
+    background: '#f0f2f5',
+    surface: '#ffffff',
+    text: {
+      primary: '#333333',
+      secondary: '#666666',
+      disabled: '#999999'
+    }
+  },
+
+  // Configuración de atajos de teclado
+  shortcuts: {
+    search: { key: 'k', ctrl: true, description: 'Enfocar búsqueda' },
+    clearSearch: { key: 'l', ctrl: true, description: 'Limpiar búsqueda' },
+    closeModal: { key: 'Escape', description: 'Cerrar modal' },
+    openCart: { key: 'c', ctrl: true, description: 'Abrir carrito' }
+  },
+
+  // Configuración de mensajes
+  messages: {
+    cart: {
+      empty: 'Tu carrito está vacío',
+      added: '✅ {product} agregado al carrito',
+      removed: '❌ {product} removido del carrito',
+      updated: '🔄 Cantidad actualizada',
+      cleared: '🗑️ Carrito limpiado'
+    },
+    search: {
+      noResults: 'No se encontraron productos que coincidan con tu búsqueda.',
+      suggestions: 'Intenta con otros términos o categorías.',
+      placeholder: '🔍 Buscar platillos...'
+    },
+    checkout: {
+      confirm: '¿Confirmar orden por ${total}?',
+      success: '¡Gracias por tu orden! Esta funcionalidad estará disponible pronto.',
+      empty: 'Tu carrito está vacío'
+    }
+  },
+
+  // Configuración de validaciones
+  validation: {
+    minQuantity: 1,
+    maxQuantity: 99,
+    minSearchLength: 1,
+    maxSearchLength: 100
+  },
+
+  // Configuración de desarrollo
+  development: {
+    debug: false,
+    showStats: true,
+    enableLogging: true,
+    mockData: false
+  }
+};
+
+// Función para obtener configuración
+function getConfig(path) {
+  return path.split('.').reduce((obj, key) => obj?.[key], CONFIG);
+}
+
+// Función para actualizar configuración
+function updateConfig(path, value) {
+  const keys = path.split('.');
+  const lastKey = keys.pop();
+  const target = keys.reduce((obj, key) => obj[key], CONFIG);
+  if (target && lastKey) {
+    target[lastKey] = value;
+  }
+}
+
+// Función para formatear precio
+function formatPrice(price) {
+  const { currencySymbol, decimalPlaces } = CONFIG.pricing;
+  return `${currencySymbol}${price.toFixed(decimalPlaces)}`;
+}
+
+// Función para obtener mensaje
+function getMessage(path, replacements = {}) {
+  let message = getConfig(`messages.${path}`);
+  if (!message) return '';
+  
+  // Reemplazar placeholders
+  Object.entries(replacements).forEach(([key, value]) => {
+    message = message.replace(`{${key}}`, value);
+  });
+  
+  return message;
+}
+
+// Función para validar cantidad
+function validateQuantity(quantity) {
+  const { minQuantity, maxQuantity } = CONFIG.validation;
+  return Math.max(minQuantity, Math.min(maxQuantity, quantity));
+}
+
+// Función para obtener alérgenos formateados
+function formatAllergens(allergens) {
+  return allergens.map(allergen => {
+    const info = CONFIG.allergens[allergen];
+    return info ? `${info.icon} ${info.name}` : allergen;
+  }).join(', ');
+}
+
+// Exportar configuración y utilidades
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { CONFIG, getConfig, updateConfig, formatPrice, getMessage, validateQuantity, formatAllergens };
+} else {
+  window.CONFIG = CONFIG;
+  window.getConfig = getConfig;
+  window.updateConfig = updateConfig;
+  window.formatPrice = formatPrice;
+  window.getMessage = getMessage;
+  window.validateQuantity = validateQuantity;
+  window.formatAllergens = formatAllergens;
+}
 
-  <script src="config.js"></script>
-  <script src="script.js"></script>
-</body>
-</html>
