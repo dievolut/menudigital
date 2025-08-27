@@ -4,7 +4,7 @@ const products = [
     name: 'Tacos Regulares',
     description: 'Carne, cebolla y cilantro',
     price: 3.75,
-    image: 'https://images.pexels.com/photos/8474723/pexels-photo-8474723.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+    image: '1.jpg',
     category: 'Tacos',
     ingredients: ['Carne de res', 'Cebolla', 'Cilantro', 'Tortilla de maíz'],
     allergens: ['Gluten'],
@@ -15,7 +15,7 @@ const products = [
     name: 'Tacos de Suadero',
     description: 'Suadero, cebolla y cilantro',
     price: 4.00,
-    image: 'https://images.pexels.com/photos/5639433/pexels-photo-5639433.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+    image: '2.jpg',
     category: 'Tacos',
     ingredients: ['Suadero', 'Cebolla', 'Cilantro', 'Tortilla de maíz'],
     allergens: ['Gluten'],
@@ -26,7 +26,7 @@ const products = [
     name: 'Tacos de Pastor',
     description: 'Carne al pastor, piña, cebolla y cilantro',
     price: 4.25,
-    image: 'https://images.pexels.com/photos/2092916/pexels-photo-2092916.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+    image: '3.jpg',
     category: 'Tacos',
     ingredients: ['Carne al pastor', 'Piña', 'Cebolla', 'Cilantro', 'Tortilla de maíz'],
     allergens: ['Gluten'],
@@ -37,7 +37,7 @@ const products = [
     name: 'Quesadilla Sencilla',
     description: 'Tortilla de harina con queso',
     price: 5.00,
-    image: 'https://cdn.pixabay.com/photo/2022/05/23/19/57/quesadillas-7216839_1280.jpg',
+    image: '4.jpg',
     category: 'Quesadillas',
     ingredients: ['Tortilla de harina', 'Queso Oaxaca'],
     allergens: ['Gluten', 'Lácteos'],
@@ -48,7 +48,7 @@ const products = [
     name: 'Quesadilla con Carne',
     description: 'Tortilla de harina con queso y carne a elegir',
     price: 6.50,
-    image: 'https://cdn.pixabay.com/photo/2017/02/01/16/39/quesadilla-2030648_1280.jpg',
+    image: '5.jpg',
     category: 'Quesadillas',
     ingredients: ['Tortilla de harina', 'Queso Oaxaca', 'Carne de res'],
     allergens: ['Gluten', 'Lácteos'],
@@ -59,7 +59,7 @@ const products = [
     name: 'Burrito de Frijoles',
     description: 'Tortilla de harina con frijoles y queso',
     price: 7.00,
-    image: 'https://cdn.pixabay.com/photo/2018/05/28/19/29/burrito-3436980_1280.jpg',
+    image: '6.jpg',
     category: 'Burritos',
     ingredients: ['Tortilla de harina', 'Frijoles refritos', 'Queso', 'Arroz'],
     allergens: ['Gluten', 'Lácteos'],
@@ -70,7 +70,7 @@ const products = [
     name: 'Burrito de Carne Asada',
     description: 'Tortilla de harina con carne asada, arroz y frijoles',
     price: 9.50,
-    image: 'https://cdn.pixabay.com/photo/2016/04/05/18/25/burrito-1310315_1280.jpg',
+    image: '1.jpg',
     category: 'Burritos',
     ingredients: ['Tortilla de harina', 'Carne asada', 'Arroz', 'Frijoles', 'Queso'],
     allergens: ['Gluten', 'Lácteos'],
@@ -81,7 +81,7 @@ const products = [
     name: 'Guacamole con Totopos',
     description: 'Aguacate fresco con pico de gallo y totopos',
     price: 6.00,
-    image: 'https://cdn.pixabay.com/photo/2020/05/21/18/01/guacamole-5201334_1280.jpg',
+    image: '2.jpg',
     category: 'Appetizers',
     ingredients: ['Aguacate', 'Tomate', 'Cebolla', 'Cilantro', 'Limón', 'Totopos'],
     allergens: [],
@@ -92,30 +92,24 @@ const products = [
     name: 'Nachos con Queso',
     description: 'Totopos con queso caliente y jalapeños',
     price: 5.50,
-    image: 'https://cdn.pixabay.com/photo/2017/04/04/19/23/nachos-2202971_1280.jpg',
+    image: '3.jpg',
     category: 'Appetizers',
     ingredients: ['Totopos', 'Queso cheddar', 'Jalapeños', 'Crema agria'],
     allergens: ['Gluten', 'Lácteos'],
     prepTime: '5-7 min'
   }
 ];
-
-const UNIFIED_IMAGE_URL = 'https://images.pexels.com/photos/2092916/pexels-photo-2092916.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1';
-
 const fallbackImages = [
-  'https://images.pexels.com/photos/8474723/pexels-photo-8474723.jpeg?auto=compress&cs=tinysrgb&w=800',
-  'https://images.pexels.com/photos/5639433/pexels-photo-5639433.jpeg?auto=compress&cs=tinysrgb&w=800',
-  'https://images.pexels.com/photos/2092916/pexels-photo-2092916.jpeg?auto=compress&cs=tinysrgb&w=800',
-  'https://cdn.pixabay.com/photo/2022/05/23/19/57/quesadillas-7216839_640.jpg',
-  'https://cdn.pixabay.com/photo/2017/02/01/16/39/quesadilla-2030648_640.jpg',
-  'https://cdn.pixabay.com/photo/2018/05/28/19/29/burrito-3436980_640.jpg',
-  'https://cdn.pixabay.com/photo/2016/04/05/18/25/burrito-1310315_640.jpg',
-  'https://cdn.pixabay.com/photo/2020/05/21/18/01/guacamole-5201334_640.jpg',
-  'https://cdn.pixabay.com/photo/2017/04/04/19/23/nachos-2202971_640.jpg'
+  '1.jpg',
+  '2.jpg',
+  '3.jpg',
+  '4.jpg',
+  '5.jpg',
+  '6.jpg',
 ];
 
 function getImageUrl(product) {
-  return product.image || UNIFIED_IMAGE_URL;
+  return product.image || "1.jpg";
 }
 
 function handleImageError(imgEl, productId) {
@@ -581,8 +575,8 @@ function getOfertasEspeciales() {
 function renderCarousel(carouselId, items) {
   // Si es el carrusel de ofertas, asignar las imágenes locales
   if (carouselId === 'carousel-ofertas') {
-    const ofertasImgs = ['casa.jpg', 'raw.png', 'astrowolf.png'];
-    for (let i = 0; i < Math.min(items.length, 3); i++) {
+    const ofertasImgs = ['1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg', '6.jpg'];
+    for (let i = 0; i < Math.min(items.length, ofertasImgs.length); i++) {
       items[i].image = ofertasImgs[i];
     }
   }
@@ -827,3 +821,4 @@ console.log(`
    • exportCart(): Exportar carrito como JSON
    • clearCart(): Limpiar carrito
 `);
+
